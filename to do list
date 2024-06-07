@@ -1,0 +1,85 @@
+import tkinter as tk
+from tkinter import messagebox
+from tkinter import simpledialog
+
+class ToDoApp:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("To-Do List App")
+        self.master.geometry("400x300")
+
+        # Initialize tasks list
+        self.tasks = []
+
+        # Create a frame
+        self.frame = tk.Frame(self.master, bg="#FFB6C1")  # Baby pink background color
+        self.frame.pack(fill=tk.BOTH, expand=True)
+
+        # Welcome label
+        self.welcome_label = tk.Label(self.frame, text="Welcome to Your To-Do List App!", font=("Arial", 16, "bold"), bg="#FFB6C1")  # Baby pink background color
+        self.welcome_label.pack(pady=10)
+
+        # Entry for task input
+        self.task_entry = tk.Entry(self.frame, width=40)
+        self.task_entry.pack(pady=5)
+
+        # Buttons
+        self.add_button = tk.Button(self.frame, text="Add Task", font=("Arial", 12), command=self.add_task)  # Increased font size
+        self.add_button.pack(pady=10, ipadx=20, ipady=5)  # Increased size
+        
+
+        self.edit_button = tk.Button(self.frame, text="Edit Task", font=("Arial", 12), command=self.edit_task)  # Increased font size
+        self.edit_button.pack(pady=10, ipadx=20, ipady=5)  # Increased size
+
+        self.delete_button = tk.Button(self.frame, text="Delete Task", font=("Arial", 12), command=self.delete_task)  # Increased font size
+        self.delete_button.pack(pady=10, ipadx=20, ipady=5)  # Increased size
+
+        self.exit_button = tk.Button(self.frame, text="Exit", font=("Arial", 12), command=self.master.quit)  # Increased font size
+        self.exit_button.pack(pady=10, ipadx=20, ipady=5)  # Increased size
+
+        # Task listbox
+        self.task_listbox = tk.Listbox(self.frame, width=50)
+        self.task_listbox.pack(pady=10)
+
+    def update_task_listbox(self):
+        self.task_listbox.delete(0, tk.END)
+        for task in self.tasks:
+            self.task_listbox.insert(tk.END, task)
+
+    def add_task(self):
+        task = self.task_entry.get()
+        if task:
+            self.tasks.append(task)
+            self.update_task_listbox()
+            self.task_entry.delete(0, tk.END)
+        else:
+            messagebox.showwarning("Warning", "Please enter a task.")
+
+    def edit_task(self):
+        selection = self.task_listbox.curselection()
+        if selection:
+            index = selection[0]
+            current_task = self.task_listbox.get(index)
+            new_task = simpledialog.askstring("Edit Task", f"Edit Task: {current_task}")
+            if new_task:
+                self.tasks[index] = new_task
+                self.update_task_listbox()
+        else:
+            messagebox.showwarning("Warning", "Please select a task to edit.")
+
+    def delete_task(self):
+        selection = self.task_listbox.curselection()
+        if selection:
+            index = selection[0]
+            del self.tasks[index]
+            self.update_task_listbox()
+        else:
+            messagebox.showwarning("Warning", "Please select a task to delete.")
+
+def main():
+    root = tk.Tk()
+    app = ToDoApp(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
